@@ -12,6 +12,25 @@ const endPoints = {
     viewAvaliableShips: `https://api.spacetraders.io/types/ships`
 }
 
+export const registerUser = async (username) => {
+    try {
+        const response = await fetch(`https://api.spacetraders.io/users/${username}/claim`)
+        const data = await response.json()
+        return data
+    } catch (error) {
+        console.error(error)
+        return {}
+    }
+}
+
+export const registerUser2 = async (username) => {
+    const response = await fetch(`https://api.spacetraders.io/users/${username}/claim`).catch((error) => {
+        console.error(error)
+    })
+    const data = await response.json()
+    return data
+}
+
 export const getUserProfileInfo = async () => {
     try {
         const response = await fetch(endPoints.userProfileInfo)

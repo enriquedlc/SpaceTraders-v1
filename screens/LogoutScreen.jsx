@@ -1,11 +1,14 @@
 import React from 'react'
 import { Image, View, Text, StyleSheet } from 'react-native'
+import Pressable from 'react-native/Libraries/Components/Pressable/Pressable'
 
 
-const LogoutScreen = () => {
+const LogoutScreen = ({ onLogout }) => {
     return (
         <View style={styles.container}>
-            <Text>Logout Screen</Text>
+            <Pressable onPress={onLogout}>
+                <Text>Logout</Text>
+            </Pressable>
         </View>
     )
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 
@@ -8,26 +8,69 @@ import ProfileScreen from './screens/ProfileScreen';
 import CreditsScreen from './screens/CreditsScreen';
 import ShipsScreen from './screens/ShipsScreen'
 import LoginScreen from './screens/LoginScreen'
-import LogoutScreen from './screens/LogoutScreen'
+import LogoutScreen from './screens/LogoutScreen1'
 import AvailableLoans from './screens/components/availableLoans/AvailableLoansList';
-import InitialScreen from './screens/InitialScreen';
+import WelcomeScreen from './screens/WelcomeScreen';
+import RegisterScreen from './screens/RegisterScreen';
 
 import { RootSiblingParent } from 'react-native-root-siblings';
 import * as SecureStore from 'expo-secure-store';
-const STORED_TOKEN_KEY = 'userToken';
+const STORED_TOKEN_KEY = 'userTokenStored';
 
-async function save(key, value) {
-  await SecureStore.setItemAsync(key, value);
+/**
+ * test 
+ */
+
+import { createStackNavigator } from '@react-navigation/stack';
+const Stack = createStackNavigator();
+
+
+// async function saveData(key, value) {
+//   await SecureStore.setItemAsync(key, value);
+// }
+
+// async function getData(key) {
+//   const result = await SecureStore.getItemAsync(key);
+//   if (result) {
+//     console.log("🔐 Here's your value 🔐 \n" + result);
+//     return result;
+//   } else {
+//     console.log('No values stored under that key.');
+//     return '';
+//   }
+// }
+
+// ASYNC STORAGE
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// const saveData = async (key, value) => {
+//   try {
+//     const savedData = AsyncStorage.setItem(key, JSON.stringify(value));
+//     console.log('====> save data',);
+//     return savedData;
+//   } catch (e) {
+//     console.log('====> save data error', e);
+//   }
+// }
+
+const saveData = async (key, value) => {
+  try {
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem(key, jsonValue);
+    console.log('====> save data');
+  } catch (e) {
+    console.log('====> save data error', e);
+  }
 }
 
-async function getValueFor(key) {
-  const result = await SecureStore.getItemAsync(key);
-  if (result) {
-    console.log("🔐 Here's your value 🔐 \n" + result);
-    return result;
-  } else {
-    console.log('No values stored under that key.');
-    return '';
+const getData = async (key) => {
+  try {
+    const jsonValue = await AsyncStorage.getItem(key);
+    console.log('====> get data', jsonValue);
+    return jsonValue != null ? JSON.parse(jsonValue) : null;
+  } catch (e) {
+    console.log('====> get data error', e);
   }
 }
 
@@ -39,41 +82,58 @@ export default function App() {
 
   useEffect(() => {
     const retrieveStoredToken = async () => {
-      const storedToken = await getValueFor('userToken');
+      const storedToken = await getData(STORED_TOKEN_KEY);
       setUserToken(storedToken);
     }
     retrieveStoredToken();
   }, [])
 
   const storeUserToken = (token) => {
+    saveData(STORED_TOKEN_KEY, token);
+    console.log('storeUserToken STATE', userToken)
     setUserToken(token);
-    save(STORED_TOKEN_KEY, token);
   }
 
   const logout = async () => {
-    setUserToken('');
     await SecureStore.deleteItemAsync(STORED_TOKEN_KEY);
   }
 
   return (
     <RootSiblingParent>
       <NavigationContainer>
-        <Drawer.Navigator initialRouteName='Initial' style={styles.container}>
+        <Drawer.Navigator initialRouteName="Profile">
           {
-            userToken === '' ?
-              <>
-                <Drawer.Screen name='Initial' component={InitialScreen}></Drawer.Screen>
-              </> :
-              <>
-                <Drawer.Screen name='Login' component={() => <LoginScreen onLogin={storeUserToken} />} />
-                <Drawer.Screen name='Register' component={RegisterScreen}></Drawer.Screen>
-                <Drawer.Screen name='Home' component={HomeScreen}></Drawer.Screen>
-                <Drawer.Screen name='Profile' component={ProfileScreen}></Drawer.Screen>
-                <Drawer.Screen name='Credits' component={CreditsScreen}></Drawer.Screen>
-                <Drawer.Screen name='Available Loans' component={AvailableLoans}></Drawer.Screen>
-                <Drawer.Screen name='Ships' component={ShipsScreen}></Drawer.Screen>
-                <Drawer.Screen name='Logout' component={() => <LogoutScreen onLogout={logout} />} />
-              </>
+            userToken !== '' ? (
+              <Stack.Group>
+                <Stack.Screen name="Available Loans" component={AvailableLoans} />
+                <Stack.Screen name="Home" component={HomeScreen} getData={getData} ></Stack.Screen>
+                <Stack.Screen name="Profile">
+                  {() => <ProfileScreen getData={getData} userToken={userToken} />}
+                </Stack.Screen>
+                <Stack.Screen name="Credits" component={CreditsScreen} />
+                <Stack.Screen name="Ships" component={ShipsScreen} />
+                {/* <Stack.Screen name="Logout" component={() => <LogoutScreen onLogout={logout} setUserToken={setUserToken} />} /> */}
+                <Stack.Screen name="Logout">
+                  {() => (
+                    <View style={styles.container}>
+                      <Pressable onPress={logout}>
+                        <Text>Logout</Text>
+                      </Pressable>
+                    </View>
+                  )}
+                </Stack.Screen>
+              </Stack.Group>
+            ) : (
+              <Stack.Group>
+                <Stack.Screen name="Welcome" component={WelcomeScreen} />
+                <Stack.Screen name="Login">
+                  {() => <LoginScreen onLogin={storeUserToken} />}
+                </Stack.Screen>
+                <Stack.Screen name="Register">
+                  {() => <RegisterScreen setUserToken={setUserToken} storeUserToken={storeUserToken} />}
+                </Stack.Screen>
+              </Stack.Group>
+            )
           }
         </Drawer.Navigator>
       </NavigationContainer>

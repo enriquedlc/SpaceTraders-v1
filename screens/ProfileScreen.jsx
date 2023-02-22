@@ -3,12 +3,15 @@ import { Image, View, Text, StyleSheet, ImageBackground } from 'react-native'
 
 import { getUserProfileInfo } from '../services/spaceTraders'
 
-const ProfileScreen = () => {
+const STORED_TOKEN_KEY = 'userTokenStored';
+
+const ProfileScreen = ({ userToken, getData }) => {
   const [profile, setProfile] = useState({ user: { username: '', credits: '', shipCount: '', joinedAt: '' } })
 
   useEffect(() => {
     const fetchUserAccount = async () => {
-      const userProfile = await getUserProfileInfo()
+      const userToken = await getData(STORED_TOKEN_KEY)
+      const userProfile = await getUserProfileInfo(userToken)
       setProfile(userProfile)
     }
     fetchUserAccount()
@@ -37,7 +40,7 @@ const ProfileScreen = () => {
         </View>
         <View style={styles.rowCharacteristic}>
           <Image source={require('../assets/appIcons/descriptionIcons/building.png')} style={styles.descriptionIconBox}></Image>
-          <Text style={styles.descriptionUserText}>Ship Count: {profile.user.structureCount}</Text>
+          <Text style={styles.descriptionUserText}>Building Count: {profile.user.structureCount}</Text>
         </View>
       </View>
     </View>

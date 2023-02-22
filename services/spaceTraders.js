@@ -14,7 +14,15 @@ const endPoints = {
 
 export const registerUser = async (username) => {
     try {
-        const response = await fetch(`https://api.spacetraders.io/users/${username}/claim`)
+        const response = await fetch(`https://api.spacetraders.io/users/${username}/claim`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: username
+            })
+        })
         const data = await response.json()
         return data
     } catch (error) {
@@ -23,17 +31,14 @@ export const registerUser = async (username) => {
     }
 }
 
-export const registerUser2 = async (username) => {
-    const response = await fetch(`https://api.spacetraders.io/users/${username}/claim`).catch((error) => {
-        console.error(error)
-    })
-    const data = await response.json()
-    return data
-}
-
-export const getUserProfileInfo = async () => {
+export const getUserProfileInfo = async (token) => {
     try {
-        const response = await fetch(endPoints.userProfileInfo)
+        const response = await fetch(`https://api.spacetraders.io/my/account?token=${token}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
         const data = await response.json()
         console.log(data)
         return data

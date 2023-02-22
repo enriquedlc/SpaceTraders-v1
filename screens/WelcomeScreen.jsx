@@ -41,13 +41,22 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         marginBottom: 30,
+        elevation: 9,
+        shadowColor: 'black',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0,
+        shadowRadius: 6,
     },
     registerButton: {
-
         backgroundColor: 'yellow',
         padding: 10,
         borderRadius: 10,
         alignItems: 'center',
+        elevation: 9,
+        shadowColor: 'black',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0,
+        shadowRadius: 6,
     },
 })
 

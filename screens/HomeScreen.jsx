@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Image, View, Text, StyleSheet } from 'react-native'
+import { Image, View, Text, StyleSheet, Pressable } from 'react-native'
 
 import TopPlayerList from './components/HomeScreen/TopPlayerList';
 import PlanetsNearbyList from './components/HomeScreen/PlanetsNearbyList';
@@ -7,16 +7,21 @@ import LoanToPay from './components/HomeScreen/LoanToPay';
 
 import { getServerStatus, getUserProfileInfo, getPlanetsNearby, getTopPlayers, getLoansToPay } from '../services/spaceTraders'
 
-const HomeScreen = () => {
-    const [profile, setProfile] = useState({ user: { username: '' } })
+const STORED_TOKEN_KEY = 'userTokenStored';
+
+const HomeScreen = ({ getData }) => {
+    const [profile, setProfile] = useState({ user: { username: '', credits: '', shipCount: '', joinedAt: '' } })
     const [serverStatus, setServerStatus] = useState(false)
     const [planetsNearby, setPlanetsNearby] = useState({ locations: [{ name: '' }] })
     const [topPlayers, setTopPlayers] = useState({ netWorth: [{ rank: 0, username: '', credits: 0 }] })
     const [loanToPay, setLoanToPay] = useState({ loans: [{ status: '', repaymentAmount: 0 }] })
 
+
     useEffect(() => {
         const fetchUserAccount = async () => {
-            setProfile(await getUserProfileInfo())
+            const userToken = await getData(STORED_TOKEN_KEY)
+            const userProfile = await getUserProfileInfo(userToken)
+            setProfile(userProfile)
         }
         const fetchServerStatus = async () => {
             setServerStatus(await getServerStatus())
@@ -41,7 +46,7 @@ const HomeScreen = () => {
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.headerText}>Server: {serverStatus ? 'online 🟢' : 'offline 🛑'} </Text>
-                <Text style={styles.headerText}>Username: {profile.user.username}</Text>
+                <Text style={styles.headerText}>Username: {profile.user.username ? profile.user.username : 'Loading...'}</Text>
             </View>
             <TopPlayerList
                 topPlayers={topPlayers}
@@ -52,12 +57,12 @@ const HomeScreen = () => {
                     planetsNearby={planetsNearby}
                     setPlanetsNearby={setPlanetsNearby}
                 />
-                <LoanToPay
+                {/* {loanToPay && <LoanToPay
                     loanToPay={loanToPay}
                     setLoanToPay={setLoanToPay}
                     profile={profile}
                     setProfile={setProfile}
-                />
+                />} */}
             </View>
         </View>
     )

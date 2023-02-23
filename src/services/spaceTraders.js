@@ -1,4 +1,6 @@
-import * as credentials from '../credentials.json'
+import * as credentials from '../../credentials.json'
+
+import { createNavigationContainerRef } from '@react-navigation/native'
 
 const endPoints = {
     userProfileInfo: `https://api.spacetraders.io/my/account?token=${credentials.token}`,
@@ -10,6 +12,14 @@ const endPoints = {
     viewLoansToPay: `https://api.spacetraders.io/my/loans`,
     viewYourShips: `https://api.spacetraders.io/my/ships`,
     viewAvaliableShips: `https://api.spacetraders.io/types/ships`
+}
+
+export const navigationRef = createNavigationContainerRef()
+
+export function navigate(screen) {
+    if (navigationRef.isReady()) {
+        screen && navigationRef.navigate(screen)
+    }
 }
 
 export const registerUser = async (username) => {

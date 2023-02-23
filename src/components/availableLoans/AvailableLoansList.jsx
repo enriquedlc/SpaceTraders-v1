@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Image, Pressable } from 'react-native'
 import React, { useState, useEffect } from 'react'
 
-import { getAvailableLoans } from '../../../services/spaceTraders'
+import { getAvailableLoans } from '../../services/spaceTraders'
 import { FlatList } from 'react-native-gesture-handler'
 
 const AvailableLoans = () => {

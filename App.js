@@ -3,15 +3,15 @@ import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 
-import HomeScreen from './screens/HomeScreen';
-import ProfileScreen from './screens/ProfileScreen';
-import CreditsScreen from './screens/CreditsScreen';
-import ShipsScreen from './screens/ShipsScreen'
-import LoginScreen from './screens/LoginScreen'
-import LogoutScreen from './screens/LogoutScreen1'
-import AvailableLoans from './screens/components/availableLoans/AvailableLoansList';
-import WelcomeScreen from './screens/WelcomeScreen';
-import RegisterScreen from './screens/RegisterScreen';
+import HomeScreen from './src/screens/HomeScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
+import CreditsScreen from './src/screens/CreditsScreen';
+import ShipsScreen from './src/screens/ShipsScreen'
+import LoginScreen from './src/screens/LoginScreen'
+import LogoutScreen from './src/screens/LogoutScreen1'
+import AvailableLoans from './src/components/availableLoans/AvailableLoansList'
+import WelcomeScreen from './src/screens/WelcomeScreen';
+import RegisterScreen from './src/screens/RegisterScreen';
 
 import { RootSiblingParent } from 'react-native-root-siblings';
 import * as SecureStore from 'expo-secure-store';
@@ -43,6 +43,7 @@ const Stack = createStackNavigator();
 // ASYNC STORAGE
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { navigationRef } from './src/services/spaceTraders';
 
 // const saveData = async (key, value) => {
 //   try {
@@ -100,7 +101,7 @@ export default function App() {
 
   return (
     <RootSiblingParent>
-      <NavigationContainer>
+      <NavigationContainer ref={navigationRef}>
         <Drawer.Navigator initialRouteName="Profile">
           {
             userToken !== '' ? (

@@ -20,26 +20,26 @@ const ProfileScreen = ({ userToken, getData }) => {
   return (
     <View style={styles.container}>
       <View style={styles.rowCharacteristic}>
-        <ImageBackground source={require('../assets/appIcons/profilePhotos/project.png')} style={styles.profileImage}></ImageBackground>
+        <ImageBackground source={require('../../assets/appIcons/profilePhotos/project.png')} style={styles.profileImage}></ImageBackground>
       </View>
       <View style={styles.statsContainer}>
         <View style={styles.rowCharacteristic}>
           <Text style={styles.descriptionUserText}>{profile.user.username}</Text>
         </View>
         <View style={styles.rowCharacteristic}>
-          <Image source={require('../assets/appIcons/descriptionIcons/coins.png')} style={styles.descriptionIcon}></Image>
+          <Image source={require('../../assets/appIcons/descriptionIcons/coins.png')} style={styles.descriptionIcon}></Image>
           <Text style={styles.descriptionUserText}>Credits: {profile.user.credits}</Text>
         </View>
         <View style={styles.rowCharacteristic}>
-          <Image source={require('../assets/appIcons/descriptionIcons/link.png')} style={styles.descriptionIcon}></Image>
+          <Image source={require('../../assets/appIcons/descriptionIcons/link.png')} style={styles.descriptionIcon}></Image>
           <Text style={styles.descriptionUserText}>{profile.user.joinedAt.substring(0, 10)}</Text>
         </View>
         <View style={styles.rowCharacteristic}>
-          <Image source={require('../assets/appIcons/descriptionIcons/startup.png')} style={styles.descriptionIconBox}></Image>
+          <Image source={require('../../assets/appIcons/descriptionIcons/startup.png')} style={styles.descriptionIconBox}></Image>
           <Text style={styles.descriptionUserText}>Ship Count: {profile.user.shipCount}</Text>
         </View>
         <View style={styles.rowCharacteristic}>
-          <Image source={require('../assets/appIcons/descriptionIcons/building.png')} style={styles.descriptionIconBox}></Image>
+          <Image source={require('../../assets/appIcons/descriptionIcons/building.png')} style={styles.descriptionIconBox}></Image>
           <Text style={styles.descriptionUserText}>Building Count: {profile.user.structureCount}</Text>
         </View>
       </View>

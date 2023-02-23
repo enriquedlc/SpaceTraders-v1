@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { Image, View, Text, StyleSheet } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
 
-import UserShipsList from './components/ShipsScreen/UserShipsList'
-import AvailableShipsToPurchaseList from './components/ShipsScreen/AvailableShipsToPurchaseList'
+import UserShipsList from '../components/shipsScreen/UserShipsList'
+import AvailableShipsToPurchaseList from '../components/shipsScreen/AvailableShipsToPurchaseList'
 
 import { getUserShips, getUserProfileInfo, getAvailableShipsToPurchase } from '../services/spaceTraders'
 
@@ -32,7 +32,7 @@ const ShipsScreen = () => {
     return (
         <View style={styles.container}>
             <View style={styles.userCredits}>
-                <Image source={require('../assets/appIcons/HomeIcons/loanToPayIcons/currency.png')} style={{ width: 37, height: 30, marginRight: 10 }} />
+                <Image source={require('../../assets/appIcons/HomeIcons/loanToPayIcons/currency.png')} style={{ width: 37, height: 30, marginRight: 10 }} />
                 <Text style={styles.creditText}>Credits: {profile.user.credits}</Text>
             </View>
             <View style={styles.userShipsAndAvailableShipsToPurchaseContainer}>

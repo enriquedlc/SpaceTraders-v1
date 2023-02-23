@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Image, View, Text, StyleSheet, Pressable } from 'react-native'
 
-import TopPlayerList from './components/HomeScreen/TopPlayerList';
-import PlanetsNearbyList from './components/HomeScreen/PlanetsNearbyList';
-import LoanToPay from './components/HomeScreen/LoanToPay';
+import TopPlayerList from '../components/homeScreen/TopPlayerList';
+import PlanetsNearbyList from '../components/homeScreen/PlanetsNearbyList';
+import LoanToPay from '../components/homeScreen/LoanToPay';
 
 import { getServerStatus, getUserProfileInfo, getPlanetsNearby, getTopPlayers, getLoansToPay } from '../services/spaceTraders'
 

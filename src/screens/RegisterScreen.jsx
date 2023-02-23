@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TextInput, Pressable, Alert } from 'react-native'
 import React, { useState } from 'react'
-import { registerUser } from '../services/spaceTraders'
+import { navigate, registerUser } from '../services/spaceTraders'
 
 const RegisterScreen = ({ storeUserToken, setUserToken }) => {
     const [username, setUsername] = useState('')
@@ -23,6 +23,7 @@ const RegisterScreen = ({ storeUserToken, setUserToken }) => {
                             } else {
                                 console.log('respuesta de la funcion', response)
                                 storeUserToken(response.token)
+                                navigate('Home')
                                 Alert.alert('Success', 'User registered successfully')
                             }
                         })

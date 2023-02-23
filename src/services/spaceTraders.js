@@ -45,6 +45,7 @@ export const getUserProfileInfo = async (token) => {
     try {
         const response = await fetch(`https://api.spacetraders.io/my/account?token=${token}`,
             {
+                method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

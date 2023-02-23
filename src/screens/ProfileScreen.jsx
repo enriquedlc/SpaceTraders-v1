@@ -1,21 +1,6 @@
-import { useEffect, useState } from 'react'
 import { Image, View, Text, StyleSheet, ImageBackground } from 'react-native'
 
-import { getUserProfileInfo } from '../services/spaceTraders'
-
-const STORED_TOKEN_KEY = 'userTokenStored';
-
-const ProfileScreen = ({ userToken, getData }) => {
-  const [profile, setProfile] = useState({ user: { username: '', credits: '', shipCount: '', joinedAt: '' } })
-
-  useEffect(() => {
-    const fetchUserAccount = async () => {
-      const userToken = await getData(STORED_TOKEN_KEY)
-      const userProfile = await getUserProfileInfo(userToken)
-      setProfile(userProfile)
-    }
-    fetchUserAccount()
-  }, [])
+const ProfileScreen = ({ profile }) => {
 
   return (
     <View style={styles.container}>

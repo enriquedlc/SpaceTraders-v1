@@ -1,19 +1,9 @@
-import { View, Text, StyleSheet, Image, Pressable } from 'react-native'
-import React, { useState, useEffect } from 'react'
-
-import { getAvailableLoans } from '../../services/spaceTraders'
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
 
-const AvailableLoans = () => {
+import { takeOutLoan } from '../../services/spaceTraders'
 
-  const [availableLoans, setAvailableLoans] = useState({ loans: [{}] })
-
-  useEffect(() => {
-    const fetchAvailableLoans = async () => {
-      setAvailableLoans(await getAvailableLoans())
-    }
-    fetchAvailableLoans()
-  }, [])
+const AvailableLoans = ({ availableLoans, userToken }) => {
 
   return (
     <View style={styles.container}>
@@ -30,11 +20,11 @@ const AvailableLoans = () => {
               <View style={styles.loanToPayItem}>
                 <View style={{ flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', width: '100%', height: 50, backgroundColor: 'lightgrey' }}>
                   <Text style={styles.loansToPayItemText}>Type: {loan.item.type}</Text>
-                  <Text style={styles.loansToPayItemText}>Rate: </Text>
+                  <Text style={styles.loansToPayItemText}>Rate: {loan.item.rate} %</Text>
                   <Text style={styles.loansToPayItemText}>Amount: {loan.item.amount}</Text>
                   <Text style={styles.loansToPayItemText}>Term: {loan.item.termInDays}</Text>
                   <Pressable
-                    onPress={() => console.log('talaso')}
+                    onPress={() => takeOutLoan(userToken, loan.item.type)}
                     style={styles.takeOutLoanButton}>
                     <Text style={styles.takeOutLoanButtonText}>Take Out Loan</Text>
                   </Pressable>

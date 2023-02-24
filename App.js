@@ -22,7 +22,7 @@ const Stack = createStackNavigator();
 // ASYNC STORAGE
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { navigationRef, getUserProfileInfo, getServerStatus, getPlanetsNearby, getTopPlayers, getLoansToPay, getUserShips, getAvailableShipsToPurchase } from './src/services/spaceTraders';
+import { getAvailableLoans, getAvailableShipsToPurchase, getLoansToPay, getPlanetsNearby, getServerStatus, getTopPlayers, getUserProfileInfo, getUserShips, navigationRef } from './src/services/spaceTraders';
 
 const saveData = async (key, value) => {
   try {
@@ -42,6 +42,17 @@ const getData = async (key) => {
   }
 }
 
+// SECURE STORAGE
+
+const saveSecureData = async (key, value) => {
+  await SecureStore.setItemAsync(key, value).catch((error) => console.log(error))
+}
+
+const getSecureData = async (key) => {
+  const value = await SecureStore.getItemAsync(key).catch((error) => console.log(error))
+  return value
+}
+
 const Drawer = createDrawerNavigator();
 
 export default function App() {
@@ -54,6 +65,7 @@ export default function App() {
   const [loanToPay, setLoanToPay] = useState({ loans: [{ status: '', repaymentAmount: 0 }] })
   const [userShips, setUserShips] = useState({ ships: [{}] })
   const [availableShipsToPurchase, setAvailableShipsToPurchase] = useState({ ships: [{}] })
+  const [availableLoans, setAvailableLoans] = useState({ loans: [{}] })
 
   useEffect(() => {
     const retrieveStoredToken = async () => {
@@ -84,6 +96,9 @@ export default function App() {
     const fetchAvailableShipsToPurcase = async () => {
       setAvailableShipsToPurchase(await getAvailableShipsToPurchase(userToken))
     }
+    const fetchAvailableLoans = async () => {
+      setAvailableLoans(await getAvailableLoans(userToken))
+    }
     if (userToken) {
       retrieveStoredToken();
     }
@@ -94,6 +109,7 @@ export default function App() {
     fetchLoanToPay()
     fetchUserShips()
     fetchAvailableShipsToPurcase()
+    fetchAvailableLoans()
   }, [userToken])
 
   const storeUserToken = (token) => {
@@ -112,7 +128,12 @@ export default function App() {
           {
             userToken !== '' ? (
               <Stack.Group>
-                <Stack.Screen name="Available Loans" component={AvailableLoans} />
+                <Stack.Screen name="Available Loans">
+                  {() => <AvailableLoans
+                    availableLoans={availableLoans}
+                    userToken={userToken}
+                  />}
+                </Stack.Screen>
                 <Stack.Screen name="Home" >
                   {() => <HomeScreen
                     profile={profile}

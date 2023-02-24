@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Image, View, Text, StyleSheet } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
 

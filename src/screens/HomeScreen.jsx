@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Image, View, Text, StyleSheet, Pressable } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 
 import TopPlayerList from '../components/homeScreen/TopPlayerList';
 import PlanetsNearbyList from '../components/homeScreen/PlanetsNearbyList';
@@ -9,7 +9,7 @@ const HomeScreen = ({ profile, setProfile, serverStatus, planetsNearby, setPlane
     const [loanStatus, setLoanStatus] = useState(false)
 
     useEffect(() => {
-        if (loanToPay.loans[0].status !== "" ) {
+        if (loanToPay.loans[0].status !== "") {
             setLoanStatus(true)
         } else {
             setLoanStatus(false)
@@ -40,7 +40,7 @@ const HomeScreen = ({ profile, setProfile, serverStatus, planetsNearby, setPlane
                             setProfile={setProfile}
                         />
                         :
-                        null  
+                        null
                 }
             </View>
         </View>

@@ -12,46 +12,17 @@ import RegisterScreen from './src/screens/RegisterScreen';
 import ShipsScreen from './src/screens/ShipsScreen';
 import WelcomeScreen from './src/screens/WelcomeScreen';
 
-import * as SecureStore from 'expo-secure-store';
 import { RootSiblingParent } from 'react-native-root-siblings';
 const STORED_TOKEN_KEY = 'userTokenStored';
 
 import { createStackNavigator } from '@react-navigation/stack';
 const Stack = createStackNavigator();
 
-// ASYNC STORAGE
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getAvailableLoans, getAvailableShipsToPurchase, getLoansToPay, getPlanetsNearby, getServerStatus, getTopPlayers, getUserProfileInfo, getUserShips, navigationRef } from './src/services/spaceTraders';
-
-const saveData = async (key, value) => {
-  try {
-    const jsonValue = JSON.stringify(value);
-    await AsyncStorage.setItem(key, jsonValue);
-  } catch (e) {
-    console.log(e);
-  }
-}
-
-const getData = async (key) => {
-  try {
-    const jsonValue = await AsyncStorage.getItem(key);
-    return jsonValue != null ? JSON.parse(jsonValue) : null;
-  } catch (e) {
-    console.log(e)
-  }
-}
 
 // SECURE STORAGE
 
-const saveSecureData = async (key, value) => {
-  await SecureStore.setItemAsync(key, value).catch((error) => console.log(error))
-}
-
-const getSecureData = async (key) => {
-  const value = await SecureStore.getItemAsync(key).catch((error) => console.log(error))
-  return value
-}
+import SecureController from './src/secure/SecureController';
 
 const Drawer = createDrawerNavigator();
 
@@ -68,14 +39,16 @@ export default function App() {
   const [availableLoans, setAvailableLoans] = useState({ loans: [{}] })
 
   useEffect(() => {
-    const retrieveStoredToken = async () => {
-      const storedToken = await getData(STORED_TOKEN_KEY);
-      setUserToken(storedToken);
+    const retrieveStoredTokenSecure = () => {
+      const userToken = SecureController.getValueFor(STORED_TOKEN_KEY);
+      setUserToken(userToken);
     }
     const retrieveUserProfileInfo = async () => {
       const userProfile = await getUserProfileInfo(userToken);
       console.log(userProfile)
-      setProfile(userProfile);
+      if (userProfile.user !== undefined) {
+        setProfile(userProfile);
+      }
     }
     const fetchServerStatus = async () => {
       setServerStatus(await getServerStatus())
@@ -98,9 +71,11 @@ export default function App() {
     }
     const fetchAvailableLoans = async () => {
       setAvailableLoans(await getAvailableLoans(userToken))
+      console.log('talaso saludos desde marte', availableLoans)
     }
     if (userToken) {
-      retrieveStoredToken();
+      // retrieveStoredToken();
+      retrieveStoredTokenSecure();
     }
     retrieveUserProfileInfo();
     fetchServerStatus()
@@ -112,13 +87,21 @@ export default function App() {
     fetchAvailableLoans()
   }, [userToken])
 
-  const storeUserToken = (token) => {
-    saveData(STORED_TOKEN_KEY, token);
-    setUserToken(token);
+  // const storeUserToken = (token) => {
+  //   saveData(STORED_TOKEN_KEY, token);
+  //   setUserToken(token);
+  // }
+
+  const deleteUserToken = () => {
+    setUserToken('');
+    SecureController.deleteData(STORED_TOKEN_KEY);
   }
 
-  const logout = async () => {
-    await SecureStore.deleteItemAsync(STORED_TOKEN_KEY);
+  const storeUserTokenSecure = (token) => {
+    if (token) {
+      SecureController.saveData(STORED_TOKEN_KEY, token);
+      setUserToken(token);
+    }
   }
 
   return (
@@ -148,7 +131,7 @@ export default function App() {
                   />}
                 </Stack.Screen>
                 <Stack.Screen name="Profile">
-                  {() => <ProfileScreen profile={profile} setProfile={setProfile} getData={getData} userToken={userToken} />}
+                  {() => <ProfileScreen profile={profile} setProfile={setProfile} userToken={userToken} />}
                 </Stack.Screen>
                 <Stack.Screen name="Credits" component={CreditsScreen} />
                 <Stack.Screen name="Ships">
@@ -164,7 +147,7 @@ export default function App() {
                 <Stack.Screen name="Logout">
                   {() => (
                     <View style={styles.container}>
-                      <Pressable onPress={logout}>
+                      <Pressable onPress={() => deleteUserToken()}>
                         <Text>Logout</Text>
                       </Pressable>
                     </View>
@@ -175,10 +158,10 @@ export default function App() {
               <Stack.Group>
                 <Stack.Screen name="Welcome" component={WelcomeScreen} />
                 <Stack.Screen name="Login">
-                  {() => <LoginScreen onLogin={storeUserToken} />}
+                  {() => <LoginScreen onLogin={storeUserTokenSecure} />}
                 </Stack.Screen>
                 <Stack.Screen name="Register">
-                  {() => <RegisterScreen setUserToken={setUserToken} storeUserToken={storeUserToken} />}
+                  {() => <RegisterScreen setUserToken={setUserToken} storeUserToken={storeUserTokenSecure} />}
                 </Stack.Screen>
               </Stack.Group>
             )

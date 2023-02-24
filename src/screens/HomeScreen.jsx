@@ -6,15 +6,6 @@ import PlanetsNearbyList from '../components/homeScreen/PlanetsNearbyList';
 import LoanToPay from '../components/homeScreen/LoanToPay';
 
 const HomeScreen = ({ profile, setProfile, serverStatus, planetsNearby, setPlanetsNearby, topPlayers, setTopPlayers, loanToPay, setLoanToPay }) => {
-    const [loanStatus, setLoanStatus] = useState(false)
-
-    useEffect(() => {
-        if (loanToPay.loans[0] && loanToPay.loans[0].status !== "") {
-            setLoanStatus(true)
-        } else {
-            setLoanStatus(false)
-        }
-    }, [loanToPay])
 
     return (
         <View style={styles.container}>
@@ -32,15 +23,14 @@ const HomeScreen = ({ profile, setProfile, serverStatus, planetsNearby, setPlane
                     setPlanetsNearby={setPlanetsNearby}
                 />
                 {
-                    loanStatus ?
-                        <LoanToPay
-                            loanToPay={loanToPay}
-                            setLoanToPay={setLoanToPay}
-                            profile={profile}
-                            setProfile={setProfile}
-                        />
-                        :
-                        null
+
+                    <LoanToPay
+                        loanToPay={loanToPay}
+                        setLoanToPay={setLoanToPay}
+                        profile={profile}
+                        setProfile={setProfile}
+                    />
+
                 }
             </View>
         </View>

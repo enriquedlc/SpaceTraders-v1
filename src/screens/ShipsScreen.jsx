@@ -1,33 +1,9 @@
-import React, { useState, useEffect } from 'react'
 import { Image, View, Text, StyleSheet } from 'react-native'
-import { FlatList } from 'react-native-gesture-handler'
 
 import UserShipsList from '../components/shipsScreen/UserShipsList'
 import AvailableShipsToPurchaseList from '../components/shipsScreen/AvailableShipsToPurchaseList'
 
-import { getUserShips, getUserProfileInfo, getAvailableShipsToPurchase } from '../services/spaceTraders'
-
-const ShipsScreen = () => {
-
-    const [profile, setProfile] = useState({ user: { credits: 0 } })
-    const [userShips, setUserShips] = useState({ ships: [{}] }) // manufacturer: '', class: '', type: ''
-    const [availableShipsToPurchase, setAvailableShipsToPurchase] = useState({ ships: [{}] })
-
-    useEffect(() => {
-        const fetchUserAccount = async () => {
-            setProfile(await getUserProfileInfo())
-        }
-        const fetchUserShips = async () => {
-            setUserShips(await getUserShips())
-        }
-        const fetchAvailableShipsToPurcase = async () => {
-            setAvailableShipsToPurchase(await getAvailableShipsToPurchase())
-        }
-        // console.log(userShips.ships[0].cargo)
-        fetchUserAccount()
-        fetchUserShips()
-        fetchAvailableShipsToPurcase()
-    }, [])
+const ShipsScreen = ({ profile, userShips, setUserShips, availableShipsToPurchase, setAvailableShipsToPurchase }) => {
 
     return (
         <View style={styles.container}>
@@ -45,7 +21,7 @@ const ShipsScreen = () => {
                     setAvailableShipsToPurchase={setAvailableShipsToPurchase}
                 />
             </View>
-        </View >
+        </View>
     )
 }
 

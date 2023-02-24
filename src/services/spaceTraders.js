@@ -142,11 +142,12 @@ export const getLoansToPay = async (token) => {
     }
 }
 
-export const getUserShips = async () => {
+export const getUserShips = async (token) => {
     try {
         const response = await fetch(endPoints.viewYourShips, {
+            method: 'GET',
             headers: {
-                'Authorization': `Bearer ${credentials.token}`
+                'Authorization': `Bearer ${token}`
             }
         })
         const data = await response.json()
@@ -156,11 +157,12 @@ export const getUserShips = async () => {
     }
 }
 
-export const getAvailableShipsToPurchase = async () => {
+export const getAvailableShipsToPurchase = async (token) => {
     try {
         const response = await fetch(endPoints.viewAvaliableShips, {
+            method: 'GET',
             headers: {
-                'Authorization': `Bearer ${credentials.token}`
+                'Authorization': `Bearer ${token}`
             }
         })
         const data = await response.json()

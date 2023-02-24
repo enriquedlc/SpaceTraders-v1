@@ -85,8 +85,7 @@ export const getAvailableLoans = async () => {
     }
 }
 
-export const getTopPlayers = async () => {
-    const token = credentials.token
+export const getTopPlayers = async (token) => {
     try {
         const response = await fetch(endPoints.viewTopPlayers, {
             headers: {
@@ -112,9 +111,14 @@ export const getShipsToPurchase = async () => {
     }
 }
 
-export const getPlanetsNearby = async () => {
+export const getPlanetsNearby = async (token) => {
     try {
-        const response = await fetch(endPoints.viewPlanetsNearby)
+        const response = await fetch(`https://api.spacetraders.io/systems/OE/locations?token=${token}&type=PLANET`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
         const data = await response.json()
         return data
     } catch (error) {
@@ -123,11 +127,11 @@ export const getPlanetsNearby = async () => {
     }
 }
 
-export const getLoansToPay = async () => {
+export const getLoansToPay = async (token) => {
     try {
         const response = await fetch(endPoints.viewLoansToPay, {
             headers: {
-                'Authorization': `Bearer ${credentials.token}`
+                'Authorization': `Bearer ${token}`
             }
         })
         const data = await response.json()

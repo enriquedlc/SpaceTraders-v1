@@ -9,7 +9,7 @@ const HomeScreen = ({ profile, setProfile, serverStatus, planetsNearby, setPlane
     const [loanStatus, setLoanStatus] = useState(false)
 
     useEffect(() => {
-        if (loanToPay.loans[0].status !== "") {
+        if (loanToPay.loans[0] && loanToPay.loans[0].status !== "") {
             setLoanStatus(true)
         } else {
             setLoanStatus(false)

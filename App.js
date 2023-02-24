@@ -22,7 +22,7 @@ const Stack = createStackNavigator();
 // ASYNC STORAGE
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { navigationRef, getUserProfileInfo, getServerStatus, getPlanetsNearby, getTopPlayers, getLoansToPay } from './src/services/spaceTraders';
+import { navigationRef, getUserProfileInfo, getServerStatus, getPlanetsNearby, getTopPlayers, getLoansToPay, getUserShips, getAvailableShipsToPurchase } from './src/services/spaceTraders';
 
 const saveData = async (key, value) => {
   try {
@@ -52,6 +52,8 @@ export default function App() {
   const [planetsNearby, setPlanetsNearby] = useState({ locations: [{ name: '' }] })
   const [topPlayers, setTopPlayers] = useState({ netWorth: [{ rank: 0, username: '', credits: 0 }] })
   const [loanToPay, setLoanToPay] = useState({ loans: [{ status: '', repaymentAmount: 0 }] })
+  const [userShips, setUserShips] = useState({ ships: [{}] })
+  const [availableShipsToPurchase, setAvailableShipsToPurchase] = useState({ ships: [{}] })
 
   useEffect(() => {
     const retrieveStoredToken = async () => {
@@ -74,7 +76,13 @@ export default function App() {
     }
     const fetchLoanToPay = async () => {
       console.log(loanToPay)
-      setLoanToPay(await getLoansToPay(token))
+      setLoanToPay(await getLoansToPay(userToken))
+    }
+    const fetchUserShips = async () => {
+      setUserShips(await getUserShips(userToken))
+    }
+    const fetchAvailableShipsToPurcase = async () => {
+      setAvailableShipsToPurchase(await getAvailableShipsToPurchase(userToken))
     }
     if (userToken) {
       retrieveStoredToken();
@@ -84,6 +92,8 @@ export default function App() {
     fetchPlanetsNearby()
     fetchTopPlayers()
     fetchLoanToPay()
+    fetchUserShips()
+    fetchAvailableShipsToPurcase()
   }, [userToken])
 
   const storeUserToken = (token) => {
@@ -112,15 +122,23 @@ export default function App() {
                     setPlanetsNearby={setPlanetsNearby}
                     topPlayers={topPlayers}
                     setTopPlayers={setTopPlayers}
-                    loanToPay={loanToPay} 
+                    loanToPay={loanToPay}
                     setLoanToPay={setLoanToPay}
-                    />}
+                  />}
                 </Stack.Screen>
                 <Stack.Screen name="Profile">
                   {() => <ProfileScreen profile={profile} setProfile={setProfile} getData={getData} userToken={userToken} />}
                 </Stack.Screen>
                 <Stack.Screen name="Credits" component={CreditsScreen} />
-                <Stack.Screen name="Ships" component={ShipsScreen} />
+                <Stack.Screen name="Ships">
+                  {() => <ShipsScreen
+                    profile={profile}
+                    userShips={userShips}
+                    setUserShips={setUserShips}
+                    availableShipsToPurchase={availableShipsToPurchase}
+                    setAvailableShipsToPurchase={setAvailableShipsToPurchase}
+                  />}
+                </Stack.Screen>
                 {/* <Stack.Screen name="Logout" component={() => <LogoutScreen onLogout={logout} setUserToken={setUserToken} />} /> */}
                 <Stack.Screen name="Logout">
                   {() => (

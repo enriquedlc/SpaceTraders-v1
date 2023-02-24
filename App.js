@@ -22,7 +22,7 @@ const Stack = createStackNavigator();
 // ASYNC STORAGE
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { navigationRef, getUserProfileInfo } from './src/services/spaceTraders';
+import { navigationRef, getUserProfileInfo, getServerStatus, getPlanetsNearby, getTopPlayers, getLoansToPay } from './src/services/spaceTraders';
 
 const saveData = async (key, value) => {
   try {
@@ -48,6 +48,10 @@ export default function App() {
 
   const [userToken, setUserToken] = useState('');
   const [profile, setProfile] = useState({ user: { username: '', credits: '', shipCount: '', joinedAt: '' } })
+  const [serverStatus, setServerStatus] = useState(false)
+  const [planetsNearby, setPlanetsNearby] = useState({ locations: [{ name: '' }] })
+  const [topPlayers, setTopPlayers] = useState({ netWorth: [{ rank: 0, username: '', credits: 0 }] })
+  const [loanToPay, setLoanToPay] = useState({ loans: [{ status: '', repaymentAmount: 0 }] })
 
   useEffect(() => {
     const retrieveStoredToken = async () => {
@@ -56,19 +60,34 @@ export default function App() {
     }
     const retrieveUserProfileInfo = async () => {
       const userProfile = await getUserProfileInfo(userToken);
-      console.log('retrieveUserProfileInfo STATE', userToken)
       console.log(userProfile)
       setProfile(userProfile);
+    }
+    const fetchServerStatus = async () => {
+      setServerStatus(await getServerStatus())
+    }
+    const fetchPlanetsNearby = async () => {
+      setPlanetsNearby(await getPlanetsNearby(userToken))
+    }
+    const fetchTopPlayers = async () => {
+      setTopPlayers(await getTopPlayers(userToken))
+    }
+    const fetchLoanToPay = async () => {
+      console.log(loanToPay)
+      setLoanToPay(await getLoansToPay(token))
     }
     if (userToken) {
       retrieveStoredToken();
     }
     retrieveUserProfileInfo();
+    fetchServerStatus()
+    fetchPlanetsNearby()
+    fetchTopPlayers()
+    fetchLoanToPay()
   }, [userToken])
 
   const storeUserToken = (token) => {
     saveData(STORED_TOKEN_KEY, token);
-    console.log('storeUserToken STATE', userToken)
     setUserToken(token);
   }
 
@@ -84,7 +103,19 @@ export default function App() {
             userToken !== '' ? (
               <Stack.Group>
                 <Stack.Screen name="Available Loans" component={AvailableLoans} />
-                <Stack.Screen name="Home" component={HomeScreen} getData={getData} ></Stack.Screen>
+                <Stack.Screen name="Home" >
+                  {() => <HomeScreen
+                    profile={profile}
+                    setProfile={setProfile}
+                    serverStatus={serverStatus}
+                    planetsNearby={planetsNearby}
+                    setPlanetsNearby={setPlanetsNearby}
+                    topPlayers={topPlayers}
+                    setTopPlayers={setTopPlayers}
+                    loanToPay={loanToPay} 
+                    setLoanToPay={setLoanToPay}
+                    />}
+                </Stack.Screen>
                 <Stack.Screen name="Profile">
                   {() => <ProfileScreen profile={profile} setProfile={setProfile} getData={getData} userToken={userToken} />}
                 </Stack.Screen>

@@ -5,48 +5,22 @@ import TopPlayerList from '../components/homeScreen/TopPlayerList';
 import PlanetsNearbyList from '../components/homeScreen/PlanetsNearbyList';
 import LoanToPay from '../components/homeScreen/LoanToPay';
 
-import { getServerStatus, getUserProfileInfo, getPlanetsNearby, getTopPlayers, getLoansToPay } from '../services/spaceTraders'
-
-const STORED_TOKEN_KEY = 'userTokenStored';
-
-const HomeScreen = ({ getData }) => {
-    const [profile, setProfile] = useState({ user: { username: '', credits: '', shipCount: '', joinedAt: '' } })
-    const [serverStatus, setServerStatus] = useState(false)
-    const [planetsNearby, setPlanetsNearby] = useState({ locations: [{ name: '' }] })
-    const [topPlayers, setTopPlayers] = useState({ netWorth: [{ rank: 0, username: '', credits: 0 }] })
-    const [loanToPay, setLoanToPay] = useState({ loans: [{ status: '', repaymentAmount: 0 }] })
-
+const HomeScreen = ({ profile, setProfile, serverStatus, planetsNearby, setPlanetsNearby, topPlayers, setTopPlayers, loanToPay, setLoanToPay }) => {
+    const [loanStatus, setLoanStatus] = useState(false)
 
     useEffect(() => {
-        const fetchUserAccount = async () => {
-            const userToken = await getData(STORED_TOKEN_KEY)
-            const userProfile = await getUserProfileInfo(userToken)
-            setProfile(userProfile)
+        if (loanToPay.loans[0].status !== "" ) {
+            setLoanStatus(true)
+        } else {
+            setLoanStatus(false)
         }
-        const fetchServerStatus = async () => {
-            setServerStatus(await getServerStatus())
-        }
-        const fetchPlanetsNearby = async () => {
-            setPlanetsNearby(await getPlanetsNearby())
-        }
-        const fetchTopPlayers = async () => {
-            setTopPlayers(await getTopPlayers())
-        }
-        const fetchLoanToPay = async () => {
-            setLoanToPay(await getLoansToPay())
-        }
-        fetchUserAccount()
-        fetchServerStatus()
-        fetchPlanetsNearby()
-        fetchTopPlayers()
-        fetchLoanToPay()
-    }, [])
+    }, [loanToPay])
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.headerText}>Server: {serverStatus ? 'online 🟢' : 'offline 🛑'} </Text>
-                <Text style={styles.headerText}>Username: {profile.user.username ? profile.user.username : 'Loading...'}</Text>
+                <Text style={styles.headerText}>Username: {profile.user.username}</Text>
             </View>
             <TopPlayerList
                 topPlayers={topPlayers}
@@ -57,12 +31,17 @@ const HomeScreen = ({ getData }) => {
                     planetsNearby={planetsNearby}
                     setPlanetsNearby={setPlanetsNearby}
                 />
-                {/* {loanToPay && <LoanToPay
-                    loanToPay={loanToPay}
-                    setLoanToPay={setLoanToPay}
-                    profile={profile}
-                    setProfile={setProfile}
-                />} */}
+                {
+                    loanStatus ?
+                        <LoanToPay
+                            loanToPay={loanToPay}
+                            setLoanToPay={setLoanToPay}
+                            profile={profile}
+                            setProfile={setProfile}
+                        />
+                        :
+                        null  
+                }
             </View>
         </View>
     )

@@ -23,6 +23,7 @@ const RegisterScreen = ({ storeUserToken, setUserToken }) => {
                             } else {
                                 console.log('respuesta de la funcion', response)
                                 storeUserToken(response.token)
+                                setUserToken(response.token)
                                 navigate('Home')
                                 Alert.alert('Success', 'User registered successfully')
                             }

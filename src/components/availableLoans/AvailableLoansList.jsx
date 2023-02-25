@@ -1,9 +1,22 @@
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
-import { FlatList } from 'react-native-gesture-handler'
-
-import { takeOutLoan } from '../../services/spaceTraders'
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
+import { takeOutLoan } from '../../services/spaceTraders';
+import { useState } from 'react';
 
 const AvailableLoans = ({ availableLoans, userToken }) => {
+  const [loans, setLoans] = useState(availableLoans.loans);
+
+  const handleTakeOutLoan = (type) => {
+    takeOutLoan(userToken, type)
+      .then((response) => {
+        console.log('fasdfasdnhfkas dufhaiusdghfauisgd fiayugsdyof', response)
+        // Actualizar la lista de préstamos disponibles con la respuesta del servidor
+        setLoans(response.loans);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <View style={styles.container}>
@@ -13,7 +26,7 @@ const AvailableLoans = ({ availableLoans, userToken }) => {
       </View>
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={availableLoans.loans}
+        data={loans}
         renderItem={(loan) => {
           return (
             <View style={styles.loanToPayDescriptionContainer}>
@@ -24,19 +37,19 @@ const AvailableLoans = ({ availableLoans, userToken }) => {
                   <Text style={styles.loansToPayItemText}>Amount: {loan.item.amount}</Text>
                   <Text style={styles.loansToPayItemText}>Term: {loan.item.termInDays}</Text>
                   <Pressable
-                    onPress={() => takeOutLoan(userToken, loan.item.type)}
+                    onPress={() => handleTakeOutLoan(loan.item.type)}
                     style={styles.takeOutLoanButton}>
                     <Text style={styles.takeOutLoanButtonText}>Take Out Loan</Text>
                   </Pressable>
                 </View>
               </View>
             </View>
-          )
+          );
         }}
       />
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

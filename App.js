@@ -20,8 +20,6 @@ const Stack = createStackNavigator();
 
 import { getAvailableLoans, getAvailableShipsToPurchase, getLoansToPay, getPlanetsNearby, getServerStatus, getTopPlayers, getUserProfileInfo, getUserShips, navigationRef } from './src/services/spaceTraders';
 
-// SECURE STORAGE
-
 import SecureController from './src/secure/SecureController';
 
 const Drawer = createDrawerNavigator();
@@ -40,8 +38,8 @@ export default function App() {
 
   useEffect(() => {
     const retrieveStoredTokenSecure = () => {
-      const userToken = SecureController.getValueFor(STORED_TOKEN_KEY);
-      setUserToken(userToken);
+      const userTokenSaved = SecureController.getValueFor(STORED_TOKEN_KEY);
+      setUserToken(userTokenSaved);
     }
     const retrieveUserProfileInfo = async () => {
       const userProfile = await getUserProfileInfo(userToken);
@@ -67,6 +65,7 @@ export default function App() {
       setUserShips(await getUserShips(userToken))
     }
     const fetchAvailableShipsToPurcase = async () => {
+      console.log('fasdfasdfasdfasdfasdfasdfasuiduhfua iogsd gfaouysdgfyu a sgdyufauy9sdg', userToken)
       setAvailableShipsToPurchase(await getAvailableShipsToPurchase(userToken))
     }
     const fetchAvailableLoans = async () => {
@@ -133,7 +132,6 @@ export default function App() {
                 <Stack.Screen name="Profile">
                   {() => <ProfileScreen profile={profile} setProfile={setProfile} userToken={userToken} />}
                 </Stack.Screen>
-                <Stack.Screen name="Credits" component={CreditsScreen} />
                 <Stack.Screen name="Ships">
                   {() => <ShipsScreen
                     profile={profile}
